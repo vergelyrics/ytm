@@ -31,10 +31,10 @@ export class VergeTune {
           client.userAgent,
 
         origin:
-          "https://www.youtube.com",
+          "https://music.youtube.com",
 
         referer:
-          "https://www.youtube.com/"
+          "https://music.youtube.com/"
       },
 
       body: JSON.stringify(body)
