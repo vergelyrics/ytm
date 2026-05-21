@@ -5,22 +5,25 @@ import { CLIENTS } from "../config"
 const app = new Hono()
 
 app.get("/:id", async c => {
+
   try {
+
     const id = c.req.param("id")
+
+    /*
+      Request YouTube player endpoint
+    */
 
     const player =
       await vergetune.request(
+
         "player",
 
         {
-          context: {
-            client: {
-              clientName: "IOS",
-              clientVersion: "19.09.3",
-              hl: "en",
-              gl: "US"
-            }
-          },
+          context:
+            vergetune.context(
+              CLIENTS.IOS
+            ),
 
           videoId: id
         },
@@ -28,19 +31,59 @@ app.get("/:id", async c => {
         CLIENTS.IOS
       )
 
+    /*
+      Extract video details
+    */
+
     const details =
       player?.videoDetails || {}
+
+    /*
+      Extract audio formats
+    */
 
     const formats =
       player?.streamingData
         ?.adaptiveFormats || []
+
+    /*
+      Find first audio stream
+    */
 
     const audio =
       formats.find((x: any) =>
         x?.mimeType?.includes("audio")
       )
 
+    /*
+      Handle signatureCipher streams
+    */
+
+    let streamUrl = null
+
+    if (audio?.url) {
+
+      streamUrl = audio.url
+
+    } else if (
+      audio?.signatureCipher
+    ) {
+
+      const params =
+        new URLSearchParams(
+          audio.signatureCipher
+        )
+
+      streamUrl =
+        params.get("url")
+    }
+
+    /*
+      Return clean song object
+    */
+
     return c.json({
+
       videoId:
         details.videoId || null,
 
@@ -60,11 +103,11 @@ app.get("/:id", async c => {
         details.thumbnail
           ?.thumbnails?.[
             details.thumbnail
-              ?.thumbnails.length - 1
+              ?.thumbnails
+              ?.length - 1
           ]?.url || null,
 
-      streamUrl:
-        audio?.url || null,
+      streamUrl,
 
       bitrate:
         audio?.bitrate || null,
@@ -74,16 +117,26 @@ app.get("/:id", async c => {
 
       playability:
         player?.playabilityStatus
-          ?.status || null
+          ?.status || null,
+
+      isLive:
+        details?.isLiveContent || false,
+
+      expiresInSeconds:
+        player?.streamingData
+          ?.expiresInSeconds || null
     })
 
   } catch (error: any) {
 
     return c.json({
+
       error: true,
 
       message:
-        error?.message || "Unknown error"
+        error?.message ||
+        "Unknown error"
+
     }, 500)
   }
 })
