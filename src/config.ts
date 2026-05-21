@@ -1,47 +1,18 @@
 export const CLIENTS = {
 
-  WEB_REMIX: {
+  WEB: {
 
-    clientName:
-      "WEB_REMIX",
+    clientName: "WEB",
 
-    clientId:
-      "67",
+    clientId: "1",
 
     clientVersion:
-      "1.20240520.01.00",
+      "2.20240520.00.00",
 
     apiKey:
-      "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX3"
-  },
+      "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
 
-  IOS: {
-
-    clientName:
-      "IOS",
-
-    clientId:
-      "5",
-
-    clientVersion:
-      "19.09.3",
-
-    apiKey:
-      "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
-  },
-
-  ANDROID_MUSIC: {
-
-    clientName:
-      "ANDROID_MUSIC",
-
-    clientId:
-      "21",
-
-    clientVersion:
-      "6.42.52",
-
-    apiKey:
-      "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
+    userAgent:
+      "Mozilla/5.0"
   }
 }
