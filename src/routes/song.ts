@@ -1,6 +1,5 @@
 import { Hono } from "hono"
 import { vergetune } from "../vergetune"
-import { CLIENTS } from "../config"
 
 const app = new Hono()
 
@@ -10,10 +9,6 @@ app.get("/:id", async c => {
 
     const id = c.req.param("id")
 
-    /*
-      Request YouTube player endpoint
-    */
-
     const player =
       await vergetune.request(
 
@@ -21,49 +16,30 @@ app.get("/:id", async c => {
 
         {
           context:
-            vergetune.context(
-              CLIENTS.IOS
-            ),
+            vergetune.context(),
 
           videoId: id
-        },
-
-        CLIENTS.IOS
+        }
       )
-
-    /*
-      Extract video details
-    */
 
     const details =
       player?.videoDetails || {}
 
-    /*
-      Extract audio formats
-    */
-
     const formats =
       player?.streamingData
         ?.adaptiveFormats || []
-
-    /*
-      Find first audio stream
-    */
 
     const audio =
       formats.find((x: any) =>
         x?.mimeType?.includes("audio")
       )
 
-    /*
-      Handle signatureCipher streams
-    */
-
     let streamUrl = null
 
     if (audio?.url) {
 
-      streamUrl = audio.url
+      streamUrl =
+        audio.url
 
     } else if (
       audio?.signatureCipher
@@ -77,10 +53,6 @@ app.get("/:id", async c => {
       streamUrl =
         params.get("url")
     }
-
-    /*
-      Return clean song object
-    */
 
     return c.json({
 
@@ -117,14 +89,7 @@ app.get("/:id", async c => {
 
       playability:
         player?.playabilityStatus
-          ?.status || null,
-
-      isLive:
-        details?.isLiveContent || false,
-
-      expiresInSeconds:
-        player?.streamingData
-          ?.expiresInSeconds || null
+          ?.status || null
     })
 
   } catch (error: any) {
