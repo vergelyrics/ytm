@@ -9,7 +9,7 @@ export class VergeTune {
   ) {
 
     const url =
-      `https://www.youtube.com/youtubei/v1/${endpoint}` +
+      `https://music.youtube.com/youtubei/v1/${endpoint}` +
       `?key=${client.apiKey}&prettyPrint=false`
 
     const response = await fetch(url, {
