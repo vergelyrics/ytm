@@ -1,0 +1,5 @@
+name = "vergetune"
+main = "src/index.ts"
+compatibility_date = "2026-05-21"
+
+workers_dev = true
