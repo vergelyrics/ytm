@@ -23,7 +23,7 @@ export class VergeTune {
 
         /*
           IMPORTANT:
-          Must be numeric IDs
+          numeric client IDs
         */
 
         "X-YouTube-Client-Name":
@@ -55,7 +55,13 @@ export class VergeTune {
     return response.json()
   }
 
-  context(client: any) {
+  /*
+    SAFE default client
+  */
+
+  context(
+    client = CLIENTS.WEB_REMIX
+  ) {
 
     return {
 
