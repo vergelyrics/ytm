@@ -8,6 +8,7 @@ import playlist from "./routes/playlist"
 import related from "./routes/related"
 import player from "./routes/player"
 import stream from "./routes/stream"
+import song from "./routes/song"
 import transcript from "./routes/transcript"
 import suggestions from "./routes/suggestions"
 
@@ -28,6 +29,7 @@ app.route("/playlist", playlist)
 app.route("/related", related)
 app.route("/player", player)
 app.route("/stream", stream)
+app.route("/song", song)
 app.route("/transcript", transcript)
 app.route("/suggestions", suggestions)
 
