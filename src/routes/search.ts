@@ -17,10 +17,6 @@ app.get("/", async c => {
       }, 400)
     }
 
-    /*
-      Request YouTube Music search
-    */
-
     const json =
       await vergetune.request(
 
@@ -30,81 +26,56 @@ app.get("/", async c => {
           context:
             vergetune.context(),
 
-          query: q,
-
-          /*
-            Song filter
-          */
-
-          params:
-            "EgWKAQIIAWoKEAkQBRAKEAMQBA=="
+          query: q
         }
       )
 
-    /*
-      Safely locate shelf
-    */
-
     const shelf =
       json?.contents
-        ?.tabbedSearchResultsRenderer
-        ?.tabs?.[0]
-        ?.tabRenderer
-        ?.content
+        ?.twoColumnSearchResultsRenderer
+        ?.primaryContents
         ?.sectionListRenderer
         ?.contents
         ?.find(
           (x: any) =>
-            x?.musicShelfRenderer
+            x?.itemSectionRenderer
         )
-        ?.musicShelfRenderer
-
-    /*
-      Handle no results
-    */
+        ?.itemSectionRenderer
 
     if (!shelf?.contents) {
 
       return c.json([])
     }
 
-    /*
-      Parse songs safely
-    */
-
     const songs =
       shelf.contents
         ?.map((x: any) => {
 
           const r =
-            x?.musicResponsiveListItemRenderer
+            x?.videoRenderer
 
           if (!r) return null
 
           return {
 
-            title: textOf(
-              r.flexColumns?.[0]
-                ?.musicResponsiveListItemFlexColumnRenderer
-                ?.text?.runs
-            ),
+            title:
+              r.title?.runs?.[0]
+                ?.text || null,
 
-            subtitle: textOf(
-              r.flexColumns?.[1]
-                ?.musicResponsiveListItemFlexColumnRenderer
-                ?.text?.runs
-            ),
+            subtitle:
+              textOf(
+                r.longBylineText
+                  ?.runs
+              ),
 
             videoId:
-              r.playlistItemData
-                ?.videoId || null,
+              r.videoId || null,
 
-            thumbnail: thumbnailOf(
-              r.thumbnail
-                ?.musicThumbnailRenderer
-                ?.thumbnail
-                ?.thumbnails
-            )
+            thumbnail:
+              thumbnailOf(
+                r.thumbnail
+                  ?.thumbnails
+              )
           }
 
         })
