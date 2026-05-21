@@ -5,66 +5,87 @@ import { CLIENTS } from "../config"
 const app = new Hono()
 
 app.get("/:id", async c => {
-  const id = c.req.param("id")
+  try {
+    const id = c.req.param("id")
 
-  const player =
-    await vergetune.request(
-      "player",
+    const player =
+      await vergetune.request(
+        "player",
 
-      {
-        context: {
-          client: {
-            clientName: "IOS",
-            clientVersion: "19.09.3",
-            hl: "en",
-            gl: "US"
-          }
+        {
+          context: {
+            client: {
+              clientName: "IOS",
+              clientVersion: "19.09.3",
+              hl: "en",
+              gl: "US"
+            }
+          },
+
+          videoId: id
         },
 
-        videoId: id
-      },
+        CLIENTS.IOS
+      )
 
-      CLIENTS.IOS
-    )
+    const details =
+      player?.videoDetails || {}
 
-  const details =
-    player.videoDetails
+    const formats =
+      player?.streamingData
+        ?.adaptiveFormats || []
 
-  const formats =
-    player.streamingData
-      ?.adaptiveFormats || []
+    const audio =
+      formats.find((x: any) =>
+        x?.mimeType?.includes("audio")
+      )
 
-  const audio =
-    formats.find((x: any) =>
-      x.mimeType?.includes("audio")
-    )
+    return c.json({
+      videoId:
+        details.videoId || null,
 
-  return c.json({
-    videoId: details.videoId,
+      title:
+        details.title || null,
 
-    title: details.title,
+      artist:
+        details.author || null,
 
-    artist: details.author,
+      duration:
+        details.lengthSeconds || null,
 
-    duration:
-      details.lengthSeconds,
+      views:
+        details.viewCount || null,
 
-    views:
-      details.viewCount,
+      thumbnail:
+        details.thumbnail
+          ?.thumbnails?.[
+            details.thumbnail
+              ?.thumbnails.length - 1
+          ]?.url || null,
 
-    thumbnail:
-      details.thumbnail
-        ?.thumbnails?.at(-1)?.url,
+      streamUrl:
+        audio?.url || null,
 
-    streamUrl:
-      audio?.url || null,
+      bitrate:
+        audio?.bitrate || null,
 
-    bitrate:
-      audio?.bitrate || null,
+      mimeType:
+        audio?.mimeType || null,
 
-    mimeType:
-      audio?.mimeType || null
-  })
+      playability:
+        player?.playabilityStatus
+          ?.status || null
+    })
+
+  } catch (error: any) {
+
+    return c.json({
+      error: true,
+
+      message:
+        error?.message || "Unknown error"
+    }, 500)
+  }
 })
 
 export default app
