@@ -5,11 +5,11 @@ export class VergeTune {
   async request(
     endpoint: string,
     body: any,
-    client = CLIENTS.WEB_REMIX
+    client = CLIENTS.WEB
   ) {
 
     const url =
-      `https://music.youtube.com/youtubei/v1/${endpoint}` +
+      `https://www.youtube.com/youtubei/v1/${endpoint}` +
       `?key=${client.apiKey}&prettyPrint=false`
 
     const response = await fetch(url, {
@@ -21,22 +21,20 @@ export class VergeTune {
         "content-type":
           "application/json",
 
-        /*
-          IMPORTANT:
-          numeric client IDs
-        */
-
-        "X-YouTube-Client-Name":
+        "x-youtube-client-name":
           client.clientId,
 
-        "X-YouTube-Client-Version":
+        "x-youtube-client-version":
           client.clientVersion,
 
-        Origin:
-          "https://music.youtube.com",
+        "user-agent":
+          client.userAgent,
 
-        Referer:
-          "https://music.youtube.com/"
+        origin:
+          "https://www.youtube.com",
+
+        referer:
+          "https://www.youtube.com/"
       },
 
       body: JSON.stringify(body)
@@ -55,12 +53,8 @@ export class VergeTune {
     return response.json()
   }
 
-  /*
-    SAFE default client
-  */
-
   context(
-    client = CLIENTS.WEB_REMIX
+    client = CLIENTS.WEB
   ) {
 
     return {
@@ -75,9 +69,7 @@ export class VergeTune {
 
         hl: "en",
 
-        gl: "US",
-
-        utcOffsetMinutes: 0
+        gl: "US"
       }
     }
   }
