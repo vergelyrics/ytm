@@ -2,14 +2,11 @@ export const CLIENTS = {
 
   WEB_REMIX: {
 
-    clientName: "WEB_REMIX",
+    clientName:
+      "WEB_REMIX",
 
-    /*
-      IMPORTANT:
-      numeric client ID
-    */
-
-    clientId: "67",
+    clientId:
+      "67",
 
     clientVersion:
       "1.20240520.01.00",
@@ -20,14 +17,11 @@ export const CLIENTS = {
 
   IOS: {
 
-    clientName: "IOS",
+    clientName:
+      "IOS",
 
-    /*
-      IMPORTANT:
-      numeric client ID
-    */
-
-    clientId: "5",
+    clientId:
+      "5",
 
     clientVersion:
       "19.09.3",
@@ -41,7 +35,8 @@ export const CLIENTS = {
     clientName:
       "ANDROID_MUSIC",
 
-    clientId: "21",
+    clientId:
+      "21",
 
     clientVersion:
       "6.42.52",
