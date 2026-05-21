@@ -14,23 +14,85 @@ import suggestions from "./routes/suggestions"
 
 const app = new Hono()
 
+/*
+  Root
+*/
+
 app.get("/", c => {
+
   return c.json({
-    engine: "VergeTune",
-    status: "running"
+
+    engine:
+      "VergeTune",
+
+    version:
+      "1.0.0",
+
+    client:
+      "WEB",
+
+    status:
+      "running"
   })
 })
 
-app.route("/home", home)
-app.route("/search", search)
-app.route("/artist", artist)
-app.route("/album", album)
-app.route("/playlist", playlist)
-app.route("/related", related)
-app.route("/player", player)
-app.route("/stream", stream)
-app.route("/song", song)
-app.route("/transcript", transcript)
-app.route("/suggestions", suggestions)
+/*
+  Routes
+*/
+
+app.route(
+  "/home",
+  home
+)
+
+app.route(
+  "/search",
+  search
+)
+
+app.route(
+  "/artist",
+  artist
+)
+
+app.route(
+  "/album",
+  album
+)
+
+app.route(
+  "/playlist",
+  playlist
+)
+
+app.route(
+  "/related",
+  related
+)
+
+app.route(
+  "/player",
+  player
+)
+
+app.route(
+  "/stream",
+  stream
+)
+
+app.route(
+  "/song",
+  song
+)
+
+app.route(
+  "/transcript",
+  transcript
+)
+
+app.route(
+  "/suggestions",
+  suggestions
+)
 
 export default app
