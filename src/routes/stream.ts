@@ -1,73 +1,86 @@
 import { Hono } from "hono"
 import { vergetune } from "../vergetune"
-import { CLIENTS } from "../config"
-import { decipherSignature } from "../extract/decipher"
 
 const app = new Hono()
 
 app.get("/:id", async c => {
-  const id = c.req.param("id")
 
-  const player =
-    await vergetune.request(
-      "player",
+  try {
 
-      {
-        context: {
-          client: {
-            clientName: "IOS",
-            clientVersion: "19.09.3",
-            hl: "en",
-            gl: "US"
-          }
-        },
+    const id = c.req.param("id")
 
-        videoId: id
-      },
+    const player =
+      await vergetune.request(
 
-      CLIENTS.IOS
-    )
+        "player",
 
-  const formats =
-    player.streamingData
-      ?.adaptiveFormats || []
+        {
+          context:
+            vergetune.context(),
 
-  const audio =
-    formats.find((x: any) =>
-      x.mimeType?.includes("audio")
-    )
-
-  if (!audio) {
-    return c.json({
-      error: "No audio stream"
-    })
-  }
-
-  if (audio.url) {
-    return c.redirect(audio.url)
-  }
-
-  if (audio.signatureCipher) {
-    const params =
-      new URLSearchParams(
-        audio.signatureCipher
+          videoId: id
+        }
       )
 
-    const url = params.get("url")
-    const s = params.get("s")
-    const sp = params.get("sp")
+    const formats =
+      player?.streamingData
+        ?.adaptiveFormats || []
 
-    const sig =
-      await decipherSignature(s!)
+    const audio =
+      formats.find((x: any) =>
+        x?.mimeType?.includes("audio")
+      )
 
-    return c.redirect(
-      `${url}&${sp}=${sig}`
-    )
+    if (!audio) {
+
+      return c.json({
+        error:
+          "No audio stream"
+      }, 404)
+    }
+
+    if (audio.url) {
+
+      return c.redirect(
+        audio.url
+      )
+    }
+
+    if (
+      audio.signatureCipher
+    ) {
+
+      const params =
+        new URLSearchParams(
+          audio.signatureCipher
+        )
+
+      const url =
+        params.get("url")
+
+      if (url) {
+
+        return c.redirect(url)
+      }
+    }
+
+    return c.json({
+      error:
+        "Unsupported stream"
+    }, 500)
+
+  } catch (error: any) {
+
+    return c.json({
+
+      error: true,
+
+      message:
+        error?.message ||
+        "Unknown error"
+
+    }, 500)
   }
-
-  return c.json({
-    error: "Unsupported stream"
-  })
 })
 
 export default app
